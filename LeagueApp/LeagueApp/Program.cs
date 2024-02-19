@@ -1,4 +1,5 @@
 using LeagueApp.Data;
+using LeagueApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // Add services to the container.
+builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<ITeamStatsService, TeamStatsService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<ILeagueService, LeagueService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
