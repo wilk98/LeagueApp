@@ -10,6 +10,7 @@ public class Match
     public int LeagueId { get; set; }
     public League League { get; set; }
     public DateTime MatchTime { get; set; }
-    public string Score { get; set; }
+    public int ScoreHome { get; set; }
+    public int ScoreAway { get; set; }
     public bool IsBest { get; set; }
 }
