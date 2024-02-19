@@ -15,7 +15,9 @@ public class TeamService : ITeamService
 
     public async Task<IEnumerable<Team>> GetAllTeamsAsync()
     {
-        return await _context.Teams.ToListAsync();
+        return await _context.Teams
+        .Include(team => team.Stats)
+        .ToListAsync();
     }
 
     public async Task<Team> GetTeamByIdAsync(int id)
