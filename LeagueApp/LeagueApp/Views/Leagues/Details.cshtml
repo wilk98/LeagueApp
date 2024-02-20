@@ -1,0 +1,8 @@
+﻿@model LeagueApp.Models.League
+
+<h2>@Model.Name</h2>
+
+<div>
+    <a href="@Url.Action("Index", "Teams", new { leagueId = Model.LeagueId })">Tabela ligowa</a>
+    <a href="@Url.Action("Index", "Matches", new { leagueId = Model.LeagueId })">Mecze</a>
+</div>
