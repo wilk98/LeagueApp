@@ -13,9 +13,9 @@ public class TeamsController : Controller
         _teamService = teamService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int leagueId)
     {
-        var teams = await _teamService.GetAllTeamsAsync();
+        var teams = await _teamService.GetAllTeamsAsync(leagueId);
         return View(teams);
     }
 
