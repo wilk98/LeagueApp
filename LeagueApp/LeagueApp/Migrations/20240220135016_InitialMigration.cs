@@ -197,8 +197,10 @@ namespace LeagueApp.Migrations
                     AwayTeamId = table.Column<int>(type: "int", nullable: false),
                     LeagueId = table.Column<int>(type: "int", nullable: false),
                     MatchTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Score = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsBest = table.Column<bool>(type: "bit", nullable: false)
+                    ScoreHome = table.Column<int>(type: "int", nullable: false),
+                    ScoreAway = table.Column<int>(type: "int", nullable: false),
+                    IsBest = table.Column<bool>(type: "bit", nullable: false),
+                    RoundNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -271,6 +273,86 @@ namespace LeagueApp.Migrations
                         principalTable: "Teams",
                         principalColumn: "TeamId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Leagues",
+                columns: new[] { "LeagueId", "Name" },
+                values: new object[] { 1, "Liga Belgijska" });
+
+            migrationBuilder.InsertData(
+                table: "Teams",
+                columns: new[] { "TeamId", "LeagueId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "Westerlo" },
+                    { 2, 1, "Cercle Brugge" },
+                    { 3, 1, "Anderlecht" },
+                    { 4, 1, "Oostende" },
+                    { 5, 1, "KV Mechelen" },
+                    { 6, 1, "Antwerp" },
+                    { 7, 1, "Club Brugge" },
+                    { 8, 1, "Genk" },
+                    { 9, 1, "St. Truiden" },
+                    { 10, 1, "Royale Union SG" },
+                    { 11, 1, "Kortrijk" },
+                    { 12, 1, "Leuven" },
+                    { 13, 1, "Waregem" },
+                    { 14, 1, "Seraing" },
+                    { 15, 1, "Charleroi" },
+                    { 16, 1, "Eupen" },
+                    { 17, 1, "St. Liege" },
+                    { 18, 1, "Gent" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Matches",
+                columns: new[] { "MatchId", "AwayTeamId", "HomeTeamId", "IsBest", "LeagueId", "MatchTime", "RoundNumber", "ScoreAway", "ScoreHome" },
+                values: new object[,]
+                {
+                    { 1, 2, 1, false, 1, new DateTime(2022, 7, 24, 21, 0, 0, 0, DateTimeKind.Unspecified), 1, 0, 2 },
+                    { 2, 4, 3, false, 1, new DateTime(2022, 7, 24, 18, 30, 0, 0, DateTimeKind.Unspecified), 1, 0, 2 },
+                    { 3, 6, 5, false, 1, new DateTime(2022, 7, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 0 },
+                    { 4, 8, 7, true, 1, new DateTime(2022, 7, 24, 13, 30, 0, 0, DateTimeKind.Unspecified), 1, 2, 3 },
+                    { 5, 10, 9, false, 1, new DateTime(2022, 7, 23, 20, 45, 0, 0, DateTimeKind.Unspecified), 1, 1, 1 },
+                    { 6, 12, 11, false, 1, new DateTime(2022, 7, 23, 18, 15, 0, 0, DateTimeKind.Unspecified), 1, 2, 0 },
+                    { 7, 14, 13, false, 1, new DateTime(2022, 7, 23, 18, 15, 0, 0, DateTimeKind.Unspecified), 1, 0, 2 },
+                    { 8, 16, 15, false, 1, new DateTime(2022, 7, 23, 16, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 3 },
+                    { 9, 18, 17, false, 1, new DateTime(2022, 7, 22, 20, 45, 0, 0, DateTimeKind.Unspecified), 1, 2, 2 },
+                    { 10, 13, 6, false, 1, new DateTime(2022, 7, 31, 21, 0, 0, 0, DateTimeKind.Unspecified), 2, 0, 1 },
+                    { 11, 11, 14, false, 1, new DateTime(2022, 7, 31, 18, 30, 0, 0, DateTimeKind.Unspecified), 2, 1, 0 },
+                    { 12, 7, 16, true, 1, new DateTime(2022, 7, 31, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, 1, 2 },
+                    { 13, 17, 8, false, 1, new DateTime(2022, 7, 31, 13, 30, 0, 0, DateTimeKind.Unspecified), 2, 1, 3 },
+                    { 14, 9, 18, false, 1, new DateTime(2022, 7, 30, 20, 45, 0, 0, DateTimeKind.Unspecified), 2, 1, 1 },
+                    { 15, 1, 12, false, 1, new DateTime(2022, 7, 30, 18, 15, 0, 0, DateTimeKind.Unspecified), 2, 0, 2 },
+                    { 16, 5, 4, false, 1, new DateTime(2022, 7, 30, 18, 15, 0, 0, DateTimeKind.Unspecified), 2, 1, 2 },
+                    { 17, 3, 2, false, 1, new DateTime(2022, 7, 30, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, 0, 1 },
+                    { 18, 15, 10, false, 1, new DateTime(2022, 7, 29, 20, 45, 0, 0, DateTimeKind.Unspecified), 2, 0, 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TeamStats",
+                columns: new[] { "TeamStatsId", "Draws", "GoalsAgainst", "GoalsFor", "Losses", "MatchesPlayed", "Points", "TeamId", "Wins" },
+                values: new object[,]
+                {
+                    { 1, 0, 3, 4, 1, 2, 3, 1, 1 },
+                    { 2, 0, 2, 1, 1, 2, 3, 2, 1 },
+                    { 3, 0, 1, 2, 1, 2, 3, 3, 1 },
+                    { 4, 0, 3, 2, 1, 2, 3, 4, 1 },
+                    { 5, 0, 4, 1, 2, 2, 0, 5, 0 },
+                    { 6, 0, 0, 3, 0, 2, 6, 6, 2 },
+                    { 7, 0, 4, 4, 1, 2, 3, 7, 1 },
+                    { 8, 0, 4, 5, 1, 2, 3, 8, 1 },
+                    { 9, 2, 2, 2, 0, 2, 2, 9, 0 },
+                    { 10, 1, 1, 2, 0, 2, 4, 10, 1 },
+                    { 11, 0, 2, 1, 1, 2, 3, 11, 1 },
+                    { 12, 0, 0, 4, 0, 2, 6, 12, 2 },
+                    { 13, 0, 1, 2, 1, 2, 3, 13, 1 },
+                    { 14, 0, 3, 0, 2, 2, 0, 14, 0 },
+                    { 15, 0, 2, 3, 1, 2, 3, 15, 1 },
+                    { 16, 0, 4, 3, 1, 2, 3, 16, 1 },
+                    { 17, 1, 5, 3, 1, 2, 1, 17, 0 },
+                    { 18, 2, 3, 3, 0, 2, 2, 18, 0 }
                 });
 
             migrationBuilder.CreateIndex(
