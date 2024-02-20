@@ -1,0 +1,35 @@
+﻿@model IEnumerable<LeagueApp.Models.Match>
+
+@{
+    ViewBag.Title = "Mecze";
+}
+
+@{
+    var matchesByRound = Model.GroupBy(m => m.RoundNumber).OrderBy(g => g.Key);
+}
+
+@foreach (var roundGroup in matchesByRound)
+{
+    <h3>Kolejka @roundGroup.Key</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Gospodarz</th>
+                <th>Gość</th>
+                <th>Wynik</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var match in roundGroup.OrderBy(m => m.MatchTime))
+            {
+                <tr>
+                    <td>@match.MatchTime.ToString("g")</td>
+                    <td>@match.HomeTeam.Name</td>
+                    <td>@match.AwayTeam.Name</td>
+                    <td>@match.ScoreHome - @match.ScoreAway</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
