@@ -1,0 +1,35 @@
+﻿@model IEnumerable<LeagueApp.Models.Team>
+
+<h2>Tabela ligowa</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Drużyna</th>
+            <th>Mecze rozegrane</th>
+            <th>Wygrane</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>Bramki zdobyte</th>
+            <th>Bramki stracone</th>
+            <th>Różnica bramek</th>
+            <th>Punkty</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in Model.OrderByDescending(t => t.Stats.Points).ThenByDescending(t => t.Stats.GoalDifference))
+        {
+            <tr>
+                <td>@team.Name</td>
+                <td>@team.Stats.MatchesPlayed</td>
+                <td>@team.Stats.Wins</td>
+                <td>@team.Stats.Draws</td>
+                <td>@team.Stats.Losses</td>
+                <td>@team.Stats.GoalsFor</td>
+                <td>@team.Stats.GoalsAgainst</td>
+                <td>@team.Stats.GoalDifference</td>
+                <td>@team.Stats.Points</td>
+            </tr>
+        }
+    </tbody>
+</table>
