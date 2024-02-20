@@ -13,17 +13,26 @@ public class TeamService : ITeamService
         _context = context;
     }
 
-    public async Task<IEnumerable<Team>> GetAllTeamsAsync()
+    public async Task<IEnumerable<Team>> GetAllTeamsAsync(int leagueId)
     {
         return await _context.Teams
-        .Include(team => team.Stats)
-        .ToListAsync();
+            .Where(team => team.LeagueId == leagueId)
+            .Include(team => team.Stats)
+            .Include(team => team.HomeMatches)
+            .Include(team => team.AwayMatches)
+            .ToListAsync();
     }
+
 
     public async Task<Team> GetTeamByIdAsync(int id)
     {
-        return await _context.Teams.FindAsync(id);
+        return await _context.Teams
+            .Include(team => team.Stats)
+            .Include(team => team.HomeMatches)
+            .Include(team => team.AwayMatches)
+            .FirstOrDefaultAsync(team => team.TeamId == id);
     }
+
 
     public async Task<Team> CreateTeamAsync(Team team)
     {
