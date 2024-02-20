@@ -13,4 +13,5 @@ public class Match
     public int ScoreHome { get; set; }
     public int ScoreAway { get; set; }
     public bool IsBest { get; set; }
+    public int RoundNumber { get; set; }
 }
