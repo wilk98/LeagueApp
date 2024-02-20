@@ -13,9 +13,9 @@ public class MatchesController : Controller
         _matchService = matchService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int leagueId)
     {
-        var matches = await _matchService.GetAllMatchesAsync();
+        var matches = await _matchService.GetAllMatchesAsync(leagueId);
         return View(matches);
     }
 
