@@ -17,9 +17,10 @@ public class MatchService : IMatchService
         _teamStatsService = teamStatsService;
     }
 
-    public async Task<IEnumerable<Match>> GetAllMatchesAsync()
+    public async Task<IEnumerable<Match>> GetAllMatchesAsync(int leagueId)
     {
         return await _context.Matches
+            .Where(team => team.LeagueId == leagueId)
             .Include(m => m.HomeTeam)
             .Include(m => m.AwayTeam)
             .ToListAsync();
