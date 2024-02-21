@@ -14,13 +14,14 @@
             <th>Bramki stracone</th>
             <th>Różnica bramek</th>
             <th>Punkty</th>
+            <th>Ulubione</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var team in Model.OrderByDescending(t => t.Stats.Points).ThenByDescending(t => t.Stats.GoalDifference))
         {
             <tr>
-                <td>@team.Name</td>
+                <td><a href="#" class="team-link" data-teamid="@team.TeamId">@team.Name</a></td>
                 <td>@team.Stats.MatchesPlayed</td>
                 <td>@team.Stats.Wins</td>
                 <td>@team.Stats.Draws</td>
@@ -29,7 +30,103 @@
                 <td>@team.Stats.GoalsAgainst</td>
                 <td>@team.Stats.GoalDifference</td>
                 <td>@team.Stats.Points</td>
+                <td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        bool isFavorite = ViewBag.FavoriteTeamIds.Contains(team.TeamId);
+                        <button class="btn btn-sm add-to-favorites"
+                                data-teamid="@team.TeamId"
+                                style="background-color: @(isFavorite ? "#ffc107" : "#007bff");">
+                            @(isFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych")
+                        </button>
+                    }
+                    else
+                    {
+                        <span>Zaloguj się, by dodać do ulubionych</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div id="matchesContainer"></div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.team-link').click(function (e) {
+                e.preventDefault();
+                var teamId = $(this).data('teamid');
+                var url = `@Url.Action("GetByTeamId", "Matches")/${teamId}`;
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        console.log("Otrzymane dane meczów:", data);
+                        var matchesHtml = '';
+                        var currentRound = 0;
+                        $.each(data, function (index, match) {
+                            if (match.roundNumber !== currentRound) {
+                                if (currentRound !== 0) {
+                                    matchesHtml += '</tbody></table>';
+                                }
+                                matchesHtml += '<h4>Kolejka: ' + match.roundNumber + '</h4>';
+                                matchesHtml += '<table class="table"><thead><tr><th>Data meczu</th><th>Gospodarz</th><th>Gość</th><th>Wynik</th></tr></thead><tbody>';
+                                currentRound = match.roundNumber;
+                            }
+                            matchesHtml += '<tr>' +
+                                '<td>' + match.matchTime + '</td>' +
+                                '<td>' + match.homeTeamName + '</td>' +
+                                '<td>' + match.awayTeamName + '</td>' +
+                                '<td>' + match.score + '</td>' +
+                                '</tr>';
+                        });
+                        if (currentRound !== 0) {
+                            matchesHtml += '</tbody></table>';
+                        }
+
+                        $('#matchesContainer').html(matchesHtml);
+                    },
+                    error: function (error) {
+                        console.error("Wystąpił błąd: ", error);
+                        $('#matchesContainer').html('<p>Wystąpił błąd podczas ładowania meczów.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.add-to-favorites').on('click', function () {
+                var $this = $(this);
+                var teamId = $this.data('teamid');
+                var url = `@Url.Action("ToggleFavoriteTeam", "Account")/${teamId}`;
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: JSON.stringify({ teamId: teamId }),
+                    success: function (response) {
+                        if (response.success) {
+                            $this.data('favorited', response.isFavorite);
+                            $this.css('background-color', response.isFavorite ? '#ffc107' : '#007bff');
+                            $this.text(response.isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych');
+                        } else {
+                            alert('Musisz być zalogowany, aby zmienić ulubione drużyny.');
+                        }
+                    },
+                    error: function () {
+                        alert('Wystąpił błąd podczas zmiany ulubionych.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+
+
+
