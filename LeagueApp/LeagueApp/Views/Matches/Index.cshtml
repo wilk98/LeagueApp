@@ -23,7 +23,7 @@
         <tbody>
             @foreach (var match in roundGroup.OrderBy(m => m.MatchTime))
             {
-                <tr>
+                <tr style="@(match.IsBest ? "background-color: #ffdd59;" : "")">
                     <td>@match.MatchTime.ToString("g")</td>
                     <td>@match.HomeTeam.Name</td>
                     <td>@match.AwayTeam.Name</td>
@@ -33,3 +33,4 @@
         </tbody>
     </table>
 }
+
