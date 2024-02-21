@@ -19,13 +19,32 @@ public class MatchesController : Controller
         return View(matches);
     }
 
+    [Route("Matches/GetByTeamId/{teamId}")]
+    public async Task<IActionResult> GetByTeamId(int teamId)
+    {
+        var matches = await _matchService.GetMatchesByTeamIdAsync(teamId);
+        if (matches == null)
+        {
+            return NotFound();
+        }
+        var formattedMatches = matches.Select(m => new
+        {
+            homeTeamName = m.HomeTeam.Name,
+            awayTeamName = m.AwayTeam.Name,
+            score = $"{m.ScoreHome} - {m.ScoreAway}",
+            matchTime = m.MatchTime.ToString("g"),
+            roundNumber = m.RoundNumber
+        }).OrderByDescending(m => m.matchTime).ToList();
+
+        return Json(formattedMatches);
+    }
+
     public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("MatchId,HomeTeamId,AwayTeamId,ScoreHome,ScoreAway,MatchDate")] Match match)
     {
         if (ModelState.IsValid)
