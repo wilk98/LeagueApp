@@ -1,8 +1,6 @@
 ﻿using LeagueApp.Data;
 using LeagueApp.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LeagueApp.Services;
 
@@ -21,6 +19,15 @@ public class MatchService : IMatchService
     {
         return await _context.Matches
             .Where(team => team.LeagueId == leagueId)
+            .Include(m => m.HomeTeam)
+            .Include(m => m.AwayTeam)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Match>> GetMatchesByTeamIdAsync(int teamId)
+    {
+        return await _context.Matches
+            .Where(team => team.AwayTeamId == teamId || team.HomeTeamId == teamId)
             .Include(m => m.HomeTeam)
             .Include(m => m.AwayTeam)
             .ToListAsync();
